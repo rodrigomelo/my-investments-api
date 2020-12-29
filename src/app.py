@@ -7,7 +7,7 @@ from src import database
 from src.database import db
 from src.models import Trader
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler = logging.FileHandler("my-investments-api.log")
 
 log = logging.getLogger(__name__)
