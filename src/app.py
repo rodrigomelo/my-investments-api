@@ -22,6 +22,13 @@ db = SQLAlchemy()
 db.init_app(app)
 db.create_all(app=app)
 
+
+class Trader(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(64), nullable=False)
+    last_name = db.Column(db.String(64), nullable=False)
+
+
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
 api = Api(version='1.0', title='my-investments-api')
@@ -53,12 +60,6 @@ class HelloWorld(Resource):
 
 
 api.add_namespace(ns_default)
-
-
-class Trader(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(64), nullable=False)
-    last_name = db.Column(db.String(64), nullable=False)
 
 
 trader_fields = api.model('Trader', {

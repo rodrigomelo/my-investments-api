@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 flask = "*"
-sqlalchemy = "*"
 flask-restplus = "*"
 werkzeug = "==0.16.1"
 flask-sqlalchemy = "*"
@@ -13,4 +12,4 @@ flask-sqlalchemy = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.8"
+python_version = "3.7"
