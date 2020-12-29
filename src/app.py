@@ -2,8 +2,10 @@ import logging
 import traceback
 from flask import Flask, Blueprint
 from flask_restplus import Api, Resource, fields
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.exc import NoResultFound
+from src import database
+from src.database import db
+from src.models import Trader
 
 logging.basicConfig(level=logging.INFO)
 handler = logging.FileHandler("my-investments-api.log")
@@ -15,23 +17,12 @@ log.addHandler(handler)
 app = Flask("my-investments-api")
 app.config['RESTPLUS_VALIDATE'] = True
 app.config['ERROR_404_HELP'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy()
-db.init_app(app)
-db.create_all(app=app)
-
-
-class Trader(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(64), nullable=False)
-    last_name = db.Column(db.String(64), nullable=False)
-
-
-blueprint = Blueprint('api', __name__, url_prefix='/api')
+database.config_db(app)
 
 api = Api(version='1.0', title='my-investments-api')
+
+blueprint = Blueprint('api', __name__, url_prefix='/api')
 
 api.init_app(blueprint)
 app.register_blueprint(blueprint)
@@ -61,14 +52,13 @@ class HelloWorld(Resource):
 
 api.add_namespace(ns_default)
 
+ns_trader = api.namespace('traders', description='Operations related to traders')
 
 trader_fields = api.model('Trader', {
     'id': fields.Integer(readonly=True),
     'first_name': fields.String(required=True),
     'last_name': fields.String(required=True)
 })
-
-ns_trader = api.namespace('traders', escription='Operations related to traders')
 
 
 @ns_trader.route('/')
