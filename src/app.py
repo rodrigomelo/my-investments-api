@@ -1,4 +1,4 @@
-import logging
+from src.log import logger
 import traceback
 from flask import Flask, Blueprint
 from flask_restplus import Api, Resource, fields
@@ -6,13 +6,6 @@ from sqlalchemy.orm.exc import NoResultFound
 from src import database
 from src.database import db
 from src.models import Trader
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler = logging.FileHandler("my-investments-api.log")
-
-log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
-log.addHandler(handler)
 
 app = Flask("my-investments-api")
 app.config['RESTPLUS_VALIDATE'] = True
@@ -31,13 +24,13 @@ app.register_blueprint(blueprint)
 @api.errorhandler
 def default_error_handler(e):
     message = 'An unhandled exception occurred.'
-    log.exception(message)
+    logger.exception(message)
     return {'message': message}, 500
 
 
 @api.errorhandler(NoResultFound)
 def database_not_found_error_handler(e):
-    log.warning(traceback.format_exc())
+    logger.warning(traceback.format_exc())
     return {'message': 'A database result was required but none was found.'}, 404
 
 
@@ -97,3 +90,21 @@ class TraderItem(Resource):
 
 
 api.add_namespace(ns_trader)
+
+
+# class AlchemyEncoder(json.JSONEncoder):
+#     def default(self, obj):
+#         if isinstance(obj.__class__, DeclarativeMeta):
+#             # an SQLAlchemy class
+#             fields = {}
+#             for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
+#                 data = obj.__getattribute__(field)
+#                 try:
+#                     json.dumps(data) # this will fail on non-encodable values, like other classes
+#                     fields[field] = data
+#                 except TypeError:
+#                     fields[field] = None
+#             # a json-encodable dict
+#             return fields
+
+#         return json.JSONEncoder.default(self, obj)
