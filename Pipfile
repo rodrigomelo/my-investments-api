@@ -9,6 +9,8 @@ flask-restplus = "*"
 werkzeug = "==0.16.1"
 flask-sqlalchemy = "*"
 python-telegram-bot = "*"
+python-dotenv = "*"
+flask-migrate = "*"
 
 [dev-packages]
 
