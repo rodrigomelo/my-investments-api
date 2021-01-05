@@ -210,10 +210,10 @@ class CurrencyCollection(Resource):
     @api.marshal_with(currency_fields, code=201)
     def post(self):
         currency = Currency(
-            code=api.payload['code'],
-            name=api.payload['name'],
-            is_active=api.payload['is_active'],
-            is_base_currency=api.payload['is_base_currency']
+            code = api.payload['code'],
+            name = api.payload['name'],
+            is_active = api.payload['is_active'],
+            is_base_currency = api.payload['is_base_currency']
         )
         db.session.add(currency)
         db.session.commit()
@@ -278,9 +278,9 @@ class TraderCollection(Resource):
     @api.marshal_with(trader_fields, code=201)
     def post(self):
         trader = Trader(
-            first_name=api.payload['first_name'],
-            last_name=api.payload['last_name'],
-            email=api.payload['email']
+            first_name = api.payload['first_name'],
+            last_name = api.payload['last_name'],
+            email = api.payload['email']
         )
         db.session.add(trader)
         db.session.commit()
