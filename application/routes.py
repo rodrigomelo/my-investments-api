@@ -168,10 +168,10 @@ def database_not_found_error_handler(e):
     return {'message': 'A database result was required but none was found.'}, 404
 
 
-@ns_default.route('/hello')
-class HelloWorld(Resource):
-    def get(self):
-        return {'hello': 'world'}
+# @ns_default.route('/hello')
+# class HelloWorld(Resource):
+#     def get(self):
+#         return {'hello': 'world'}
 
 
 @ns_country.route('/')
