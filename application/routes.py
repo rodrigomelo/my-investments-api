@@ -213,7 +213,7 @@ class CurrencyCollection(Resource):
             code=api.payload['code'],
             name=api.payload['name'],
             is_active=api.payload['is_active'],
-            is_base_currency=api.payload['nais_base_currencyme']
+            is_base_currency=api.payload['is_base_currency']
         )
         db.session.add(currency)
         db.session.commit()
