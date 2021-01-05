@@ -64,8 +64,10 @@ currency_fields = api.model('Currency', {
 
 currency_rate_fields = api.model('CurrencyRate', {
     'id': fields.Integer(readonly=True),
-    'currency': fields.Nested(currency_fields, required=True),
-    'base_currency': fields.Nested(currency_fields, required=True),
+    'currency_id': fields.Integer(required=True),
+    'currency': fields.Nested(currency_fields, required=False),
+    'base_currency_id': fields.Integer(required=True),
+    'base_currency': fields.Nested(currency_fields, required=False),
     'rate': fields.Float(required=True),
     'ts': fields.DateTime(required=True)
 })
@@ -188,7 +190,7 @@ class CountryCollection(Resource):
     @api.marshal_with(country_fields, code=201)
     def post(self):
         country = Country(
-            name = api.payload['name']
+            name=api.payload['name']
         )
         db.session.add(country)
         db.session.commit()
@@ -210,10 +212,10 @@ class CurrencyCollection(Resource):
     @api.marshal_with(currency_fields, code=201)
     def post(self):
         currency = Currency(
-            code = api.payload['code'],
-            name = api.payload['name'],
-            is_active = api.payload['is_active'],
-            is_base_currency = api.payload['is_base_currency']
+            code=api.payload['code'],
+            name=api.payload['name'],
+            is_active=api.payload['is_active'],
+            is_base_currency=api.payload['is_base_currency']
         )
         db.session.add(currency)
         db.session.commit()
@@ -235,7 +237,12 @@ class CurrencyRateCollection(Resource):
     @api.marshal_with(currency_rate_fields, code=201)
     def post(self):
         currency_rate = CurrencyRate(
+            currency_id=api.payload['currency_id'],
+            base_currency_id=api.payload['base_currency_id'],
+            rate=api.payload['rate'],
+            ts=api.payload['ts']
         )
+        
         db.session.add(currency_rate)
         db.session.commit()
 
@@ -278,9 +285,9 @@ class TraderCollection(Resource):
     @api.marshal_with(trader_fields, code=201)
     def post(self):
         trader = Trader(
-            first_name = api.payload['first_name'],
-            last_name = api.payload['last_name'],
-            email = api.payload['email']
+            first_name=api.payload['first_name'],
+            last_name=api.payload['last_name'],
+            email=api.payload['email']
         )
         db.session.add(trader)
         db.session.commit()
@@ -314,8 +321,8 @@ class ItemCollection(Resource):
     @api.marshal_with(item_fields, code=201)
     def post(self):
         item = Item(
-            code = api.payload['code'],
-            name = api.payload['name']
+            code=api.payload['code'],
+            name=api.payload['name']
         )
         db.session.add(item)
         db.session.commit()
