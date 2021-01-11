@@ -82,7 +82,7 @@ currency_rate_fields = api.model('CurrencyRate', {
     'base_currency_id': fields.Integer(required=True),
     'base_currency': fields.Nested(currency_fields, required=False),
     'rate': fields.Float(required=True),
-    'ts': DateTime(required=True)
+    'ts': fields.DateTime(required=True)
 })
 
 currency_used_fields = api.model('CurrencyUsed', {
