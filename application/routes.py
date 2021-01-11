@@ -6,6 +6,7 @@ from flask_restplus import Api, Resource, fields
 from sqlalchemy.orm.exc import NoResultFound
 from . import db
 from .models import Country, Currency, CurrencyRate, CurrencyUsed, Trader, Item, CurrentInventory, Offer, Price, Report, Trade
+from datetime import datetime
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
@@ -49,8 +50,20 @@ api.add_namespace(ns_report)
 ns_trade = api.namespace('trades')
 api.add_namespace(ns_trade)
 
+
+class DateTime(fields.Raw):
+    def parse(self, value):
+        if isinstance(value, datetime):
+            return value
+        if isinstance(value, str):
+            return datetime.strptime(value, '%Y-%m-%d %H:%M:%S.%f')
+        else:
+            raise ValueError("Unsupported string format")
+
+
 country_fields = api.model('Country', {
     'id': fields.Integer(readonly=True),
+    'code': fields.String(required=True),
     'name': fields.String(required=True)
 })
 
@@ -69,7 +82,7 @@ currency_rate_fields = api.model('CurrencyRate', {
     'base_currency_id': fields.Integer(required=True),
     'base_currency': fields.Nested(currency_fields, required=False),
     'rate': fields.Float(required=True),
-    'ts': fields.DateTime(required=True)
+    'ts': DateTime(required=True)
 })
 
 currency_used_fields = api.model('CurrencyUsed', {
@@ -190,6 +203,7 @@ class CountryCollection(Resource):
     @api.marshal_with(country_fields, code=201)
     def post(self):
         country = Country(
+            code=api.payload['code'],
             name=api.payload['name']
         )
         db.session.add(country)
